@@ -1,0 +1,192 @@
+﻿<Application x:Class="QuickSearch.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:QuickSearch.Helpers"
+             xmlns:local="clr-namespace:QuickSearch">
+    <Application.Resources>
+        <ResourceDictionary >
+            <ResourceDictionary.MergedDictionaries>
+                <!--
+                *******************************
+                ***    COLORS  RESOURCES    ***
+                *******************************
+                -->
+                <ResourceDictionary >
+                    <Color x:Key="Application.AccentColor" >#FF0266</Color>
+                    <Color x:Key="Application.AccentColorLight1"></Color>
+                    <Color x:Key="Application.AccentColorLight2"></Color>
+                    <Color x:Key="Application.AccentColorLight3"></Color>
+                    <Color x:Key="Application.AccentColorDark1"></Color>
+                    <Color x:Key="Application.AccentColorDark2"></Color>
+                    <Color x:Key="Application.AccentColorDark3"></Color>
+                </ResourceDictionary>
+
+                <!--
+                *******************************
+                ***    BRUSHES RESOURCES    ***
+                *******************************
+                -->
+                <ResourceDictionary >
+                    <SolidColorBrush x:Key="TextBox.Static.Foreground" Color="#FF1E1E1E"/>
+                    <SolidColorBrush x:Key="TextBox.Static.PlaceholderTextForeground" Color="#FF5A5A5A"/>
+                    <SolidColorBrush x:Key="TextBox.MouseOver.Foreground" Color="#FF3C3C3C"/>
+                    <SolidColorBrush x:Key="TextBox.MouseOver.PlaceholderTextForeground" Color="#FF787878"/>
+                    <SolidColorBrush x:Key="TextBox.KeyboardFocused.Foreground" Color="Black"/>
+                    <SolidColorBrush x:Key="TextBox.KeyboardFocused.PlaceholderTextForeground" Color="#FF969696"/>
+
+                    <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
+                    <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
+                    <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
+                    <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
+                    <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>
+                    <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
+                </ResourceDictionary>
+
+                <!--
+                *******************************
+                ***    STYLES  RESOURCES    ***
+                *******************************
+                -->
+                <ResourceDictionary >
+                    <Style x:Key="FocusVisual">
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style x:Key="SearchTextBoxStyle" TargetType="{x:Type TextBox}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TextBox.Static.Foreground}"/>
+                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="AllowDrop" Value="true"/>
+                        <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TextBox}">
+                                    <Grid x:Name="layoutRoot" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <TextBlock x:Name="placeholderText" Foreground="{DynamicResource TextBox.Static.PlaceholderTextForeground}" Visibility="Collapsed"
+                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Text="Search for files, applications or browse online..."
+                                                   Margin="5, 0"/>
+                                        <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="TextElement.Foreground" TargetName="PART_ContentHost" Value="{DynamicResource TextBox.MouseOver.Foreground}"/>
+                                            <Setter Property="Foreground" TargetName="placeholderText" Value="{DynamicResource TextBox.MouseOver.PlaceholderTextForeground}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsKeyboardFocused" Value="true">
+                                            <Setter Property="TextElement.Foreground" TargetName="PART_ContentHost" Value="{DynamicResource TextBox.MouseOver.Foreground}"/>
+                                            <Setter Property="Foreground" TargetName="placeholderText" Value="{DynamicResource TextBox.KeyboardFocused.PlaceholderTextForeground}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="false">
+                                            <Setter Property="Opacity" TargetName="layoutRoot" Value="0.56"/>
+                                        </Trigger>
+                                        <!---->
+                                        <Trigger Property="Text" Value="">
+                                            <Setter Property="Visibility" TargetName="placeholderText" Value="Visible"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true"/>
+                                    <Condition Property="IsSelectionActive" Value="false"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
+                            </MultiTrigger>
+                        </Style.Triggers>
+                    </Style>
+
+                    <Style x:Key="SearchResultListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="SnapsToDevicePixels" Value="True"/>
+                        <Setter Property="Padding" Value="4,1"/>
+                        <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="Height" Value="40"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Grid x:Name="layoutRoot" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" Content="{Binding DisplayName}"/>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsMouseOver" Value="True"/>
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" TargetName="layoutRoot" Value="{StaticResource Item.MouseOver.Background}"/>
+                                        </MultiTrigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                                <Condition Property="IsSelected" Value="True"/>
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" TargetName="layoutRoot" Value="{StaticResource Item.SelectedInactive.Background}"/>
+                                        </MultiTrigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                                <Condition Property="IsSelected" Value="True"/>
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" TargetName="layoutRoot" Value="{StaticResource Item.SelectedActive.Background}"/>
+                                        </MultiTrigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="TextElement.Foreground" TargetName="layoutRoot" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ResourceDictionary>
+
+                <!--
+                *******************************
+                ***   TEMPLATES RESOURCES   ***
+                *******************************
+                -->
+                <ResourceDictionary >
+                    
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!--Other resources-->
+            <helpers:ViewModelLocator x:Key="Locator"/>
+
+            <ContextMenu x:Key="TrayIconContextMenu">
+                <MenuItem Header="QuickSearch (Preview) v0.15" IsEnabled="False"/>
+                <Separator />
+                <MenuItem Header="Settings" Click="OnSettingsItemClick"/>
+                <Separator />
+                <MenuItem Header="Exit" Click="OnExitItemClick"/>
+            </ContextMenu>
+
+            <PathGeometry x:Key="Search">
+                <PathGeometry.Figures>
+                    M481.8,453l-140-140.1c27.6-33.1,44.2-75.4,44.2-121.6C386,85.9,299.5,0.2,193.1,0.2S0,86,0,191.4s86.5,191.1,192.9,191.1
+			        c45.2,0,86.8-15.5,119.8-41.4l140.5,140.5c8.2,8.2,20.4,8.2,28.6,0C490,473.4,490,461.2,481.8,453z M41,191.4
+			        c0-82.8,68.2-150.1,151.9-150.1s151.9,67.3,151.9,150.1s-68.2,150.1-151.9,150.1S41,274.1,41,191.4z
+                </PathGeometry.Figures>
+            </PathGeometry>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
